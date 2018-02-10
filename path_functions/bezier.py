@@ -1,4 +1,4 @@
-from path_tools.curve_common import *
+from path_functions.function_common import *
 
 class BezierSegment:
   def __init__(self, x1, x1_right, x2_left, x2, t1, t2):
@@ -18,7 +18,7 @@ class BezierSegment:
             3*u2*u1*u1*self.x2_left +
             u1*u1*u1*self.x2)
 
-class BezierFunction(PiecewiseCurve):
+class BezierFunction(PiecewiseFunction):
 
   def generate_pieces(self, **kwargs):
     self.left_handles = self.adaptor.left_handles(**kwargs)

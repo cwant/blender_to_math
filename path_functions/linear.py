@@ -1,4 +1,4 @@
-from path_tools.curve_common import *
+from path_functions.function_common import *
 
 class Linear:
   def __init__(self, x1, x2, t1, t2):
@@ -15,7 +15,7 @@ class Linear:
   def evaluate(self, t):
     return self.a * t + self.b
 
-class PiecewiseLinearFunction(PiecewiseCurve):
+class PiecewiseLinearFunction(PiecewiseFunction):
   def generate_pieces(self, **kwargs):
     # Generate the individual linear parts
     start = self.t1

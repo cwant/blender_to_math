@@ -1,2 +1,0 @@
-from blender_to_math.path_tools.adaptors.mesh_adaptor import MeshAdaptor
-from blender_to_math.path_tools.adaptors.curve_adaptor import CurveAdaptor

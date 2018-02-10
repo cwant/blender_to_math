@@ -1,5 +1,5 @@
 import bpy, bmesh
-from blender_to_math.path_tools import *
+from blender_to_math.path_functions import *
 
 def bmesh_to_piecewise_linears(bm, **kwargs):
   vert_lists = bmesh_to_vert_lists(bm)

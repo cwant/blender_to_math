@@ -1,6 +1,6 @@
-from blender_to_math.path_tools.adaptors import *
+from blender_to_math.path_functions.adaptors import *
 
-class CurveCommon:
+class FunctionCommon:
   def __init__(self, **kwargs):
     self.t1 = kwargs.get('t1')
     if self.t1 == None: raise ValueError('Need t1' + str(self.t1))
@@ -14,7 +14,7 @@ class CurveCommon:
       self.adaptor = CurveAdaptor(**kwargs)
     else: ValueError("Can't determine input type!")
 
-class PiecewiseCurve(CurveCommon):
+class PiecewiseFunction(FunctionCommon):
   def __init__(self, **kwargs):
     super().__init__(**kwargs)
 

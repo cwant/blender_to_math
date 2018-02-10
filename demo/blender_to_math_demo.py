@@ -2,10 +2,10 @@ import bpy, bmesh
 import blender_to_math
 from importlib import reload
 reload(blender_to_math)
-import blender_to_math.path_tools
-reload(blender_to_math.path_tools)
-from blender_to_math.path_tools.linear import *
-from blender_to_math.path_tools.bezier import *
+import blender_to_math.path_functions
+reload(blender_to_math.path_functions)
+from blender_to_math.path_functions.linear import *
+from blender_to_math.path_functions.bezier import *
 from blender_to_math import *
 
 def main():
