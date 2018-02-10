@@ -1,44 +1,20 @@
 import bpy, bmesh
-from blender_to_math.core.path_tools import *
-
-def bmesh_to_vert_lists(bm):
-  # Mesh is assumed to be a collection of one or more lines
-  # (verts and connecting edges)
-  # Each disconnected piece is a member of the returned list
-  verts_done = [False] * len(bm.verts) 
-  vert_lists = []
-
-  for vert in bm.verts:
-    if verts_done[vert.index]: continue
-    vert_list = OrderedVertList(vert)
-    while(True):
-      vert = vert_list.add_next()
-      if vert: verts_done[vert.index] = True
-      else: break
-    while(True):
-      vert = vert_list.add_prev()
-      if vert: verts_done[vert.index] = True
-      else: break
-    if not vert_list.degenerate: vert_lists.append(vert_list)
-  return vert_lists
-
-def bmesh_to_vert_list(bm):
-  vert_lists = bmesh_to_vert_lists(bm)
-  if len(vert_lists) > 0: return vert_lists[0]
-  return None
+from blender_to_math.path_tools import *
 
 def bmesh_to_piecewise_linears(bm, **kwargs):
   vert_lists = bmesh_to_vert_lists(bm)
   piecewise_list = []
   for vert_list in vert_lists:
-    piecewise = PiecewiseLinear(vert_list, **kwargs)
+    options = { 'vert_list': vert_list }
+    piecewise = PiecewiseLinear(**{**kwargs, **options})
     piecewise_list.append(piecewise)
   return piecewise_list
 
 def bmesh_to_piecewise_linear(bm, **kwargs):
   vert_list = bmesh_to_vert_list(bm)
+  options = { 'vert_list': vert_list }
   if not vert_list: return None
-  return PiecewiseLinear(vert_list, **kwargs)
+  return PiecewiseLinear(**{**kwargs, **options})
 
 def bmesh_to_piecewise_cubics(bm, **kwargs):
   vert_lists = bmesh_to_vert_lists(bm)

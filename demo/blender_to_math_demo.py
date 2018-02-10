@@ -1,43 +1,62 @@
 import bpy, bmesh
+import blender_to_math
+from importlib import reload
+reload(blender_to_math)
+import blender_to_math.path_tools
+reload(blender_to_math.path_tools)
+from blender_to_math.path_tools.linear import *
+from blender_to_math.path_tools.bezier import *
 from blender_to_math import *
 
 def main():
-  me = bpy.data.objects["Profile"].data
-  bm = bmesh.new()
-  bm.from_mesh(me)
+  mesh = bpy.data.objects["Profile"].data
+  create_profile_line(mesh)
 
   curve = bpy.data.objects["BezierCurve"].data
   create_bezier_spline(curve)
 
-def create_profile_spline(bm):
-  options = { 't1': 0.0, 't2': 1.0, 't_num': 100, 'cyclic': False}
-  surface = bmesh_to_piecewise_cubic(bm, **options)
-  if 'Profile.curve' in bpy.data.objects:
-    ob = bpy.data.objects['Profile.curve']
-    me = ob.data
-  else:
-    me = bpy.data.meshes.new('Profile.curve')
-    ob = bpy.data.objects.new('Profile.curve', me)
-    scn = bpy.context.scene
-    scn.objects.link(ob)
+def create_profile_line(mesh):
+  output = 'Profile.line'
+  input_options = { 't1': 0.0, 't2': 1.0, 'cyclic': False, 'mesh': mesh }
+  output_options = { 't1': 0.0, 't2': 1.0, 't_num': 100 }
 
-  bm = curve_to_bmesh(surface.evaluate, **options)
+  #function = PiecewiseLinearFunction(**input_options)
+  function = BezierFunction(**input_options)
+
+  bm = curve_to_bmesh(function.evaluate, **output_options)
+
+  ob = get_or_create_mesh_object(output)
+  me = ob.data
   bm.to_mesh(me)
   me.update()
 
 def create_bezier_spline(curve):
-  options = { 'curve': curve, 't1': 0.0, 't2': 1.0, 't_num': 100,
-              'cyclic': False}
-  surface = BezierToMath(**options)
-  if 'Profile.curve' in bpy.data.objects:
-    ob = bpy.data.objects['Profile.curve']
-    me = ob.data
-  else:
-    me = bpy.data.meshes.new('Profile.curve')
-    ob = bpy.data.objects.new('Profile.curve', me)
-    scn = bpy.context.scene
-    scn.objects.link(ob)
+  output_name = 'Profile.curve'
+  input_options = { 't1': 0.0, 't2': 1.0, 'cyclic': False, 'curve': curve}
+  output_options = { 't1': 0.0, 't2': 1.0, 't_num': 100 }
+
+  function = BezierFunction(**input_options)
+  bm = curve_to_bmesh(function.evaluate, **output_options)
+
+  ob = get_or_create_mesh_object(output_name)
+  me = ob.data
+  bm.to_mesh(me)
+  me.update()
+
+def create_profile_spline(bm):
+  options = { 't1': 0.0, 't2': 1.0, 't_num': 100, 'cyclic': False}
+  surface = bmesh_to_piecewise_cubic(bm, **options)
 
   bm = curve_to_bmesh(surface.evaluate, **options)
   bm.to_mesh(me)
   me.update()
+
+def get_or_create_mesh_object(name):
+  if name in bpy.data.objects:
+    return bpy.data.objects[name]
+  me = bpy.data.meshes.new(name)
+  ob = bpy.data.objects.new(name, me)
+  scn = bpy.context.scene
+  scn.objects.link(ob)
+  return ob
+  

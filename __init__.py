@@ -1,1 +1,1 @@
-from blender_to_math.public import *
+from blender_to_math.path_tools import *
