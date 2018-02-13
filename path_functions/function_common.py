@@ -7,12 +7,14 @@ class FunctionCommon:
     self.t2 = kwargs.get('t2')
     if self.t2 == None: raise ValueError('Need t2')
     self.width = self.t2 - self.t1
-    self.cyclic = kwargs.get('cyclic') or False
     if kwargs.get('bmesh') or kwargs.get('mesh'):
       self.adaptor = MeshAdaptor(**kwargs)
     elif kwargs.get('curve') or kwargs.get('spline'):
       self.adaptor = CurveAdaptor(**kwargs)
     else: ValueError("Can't determine input type!")
+    self.cyclic = self.adaptor.cyclic
+    if kwargs.get('cyclic') != None:
+      self.cyclic = kwargs.get('cyclic')
 
 class PiecewiseFunction(FunctionCommon):
   def __init__(self, **kwargs):
@@ -62,7 +64,7 @@ class PiecewiseFunction(FunctionCommon):
     # Which partition does t fall in?
     for i in range(self.num_points):
       if self.partition[i] >= t: return i
-    return self.num - 1
+    return self.num_points - 1
 
   def evaluate(self, t):
     t = self.sanitize_t(t)    
