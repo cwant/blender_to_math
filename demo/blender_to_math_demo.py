@@ -29,12 +29,12 @@ def main():
 
 def create_profile_line(**kwargs):
   output_name = kwargs.get('output_name')
-  input_options = { 't1': 0.0, 't2': 1.0, 'cyclic': False }
+  input_options = { 't1': 0.0, 't2': 1.0 }
   output_options = { 't1': 0.0, 't2': 1.0, 't_num': 100 }
 
   function = PiecewiseLinearFunction(**{**kwargs, **input_options})
-  #function = BezierFunction(**{**kwargs, **input_options})
-
+  if function.cyclic:
+    output_options['cyclic'] = True
   bm = function_1d_to_bmesh(function.evaluate, **output_options)
 
   ob = get_or_create_mesh_object(output_name, **kwargs)
@@ -44,10 +44,13 @@ def create_profile_line(**kwargs):
 
 def create_bezier_spline(**kwargs):
   output_name = kwargs.get('output_name')
-  input_options = { 't1': 0.0, 't2': 1.0, 'cyclic': False }
+  input_options = { 't1': 0.0, 't2': 1.0 }
   output_options = { 't1': 0.0, 't2': 1.0, 't_num': 100 }
 
   function = BezierFunction(**{**kwargs, **input_options})
+  if function.cyclic:
+    output_options['cyclic'] = True
+
   bm = function_1d_to_bmesh(function.evaluate, **output_options)
 
   ob = get_or_create_mesh_object(output_name, **kwargs)
@@ -57,11 +60,13 @@ def create_bezier_spline(**kwargs):
 
 def create_bezier_surface(**kwargs):
   output_name = kwargs.get('output_name')
-  input_options = { 't1': 0.0, 't2': 1.0, 'cyclic': False }
+  input_options = { 't1': 0.0, 't2': 1.0 }
   output_options = { 'u1': 0.0, 'u2': 1.0, 'u_num': 50,
                      'v1': 0.0, 'v2': 2*pi, 'v_num': 50, 'v_cyclic': True }
 
   function_1d = BezierFunction(**{**kwargs, **input_options})
+  if function_1d.cyclic:
+    output_options['u_cyclic'] = True
   function_2d = RevolutionFunction(function=function_1d, axis=(0, 1, 0))
   bm = function_2d_to_bmesh(function_2d.evaluate, **output_options)
 

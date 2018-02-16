@@ -24,12 +24,13 @@ class BezierFunction(PiecewiseFunction):
     self.left_handles = self.adaptor.left_handles(**kwargs)
     self.right_handles = self.adaptor.right_handles(**kwargs)
     start = self.t1
-    for i in range(self.num_points):
+    for i in range(self.num_pieces):
+      i_next = (i+1) % self.num_points
       t1 = start
       t2 = self.partition[i]
       x1 = self.point_list[i]
       x1_right = self.right_handles[i]
-      x2_left = self.left_handles[i+1]
-      x2 = self.point_list[i+1]
+      x2_left = self.left_handles[i_next]
+      x2 = self.point_list[i_next]
       self.pieces[i] = BezierSegment(x1, x1_right, x2_left, x2, t1, t2)
       start = t2

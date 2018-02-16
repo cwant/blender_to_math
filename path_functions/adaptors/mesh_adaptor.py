@@ -110,6 +110,7 @@ class MeshAdaptor:
     self.vert_list = self.bmesh_to_vert_list()
     self.points = self.vert_list.to_list()
     self.cyclic = self.vert_list.cyclic
+    if self.cyclic: self.points.append(self.points[0])
     # For faking bezier handles
     self.diffs = None
 

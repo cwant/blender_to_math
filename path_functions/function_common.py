@@ -1,4 +1,5 @@
 from blender_to_math.path_functions.adaptors import *
+from math import floor
 
 class FunctionCommon:
   def __init__(self, **kwargs):
@@ -23,10 +24,11 @@ class PiecewiseFunction(FunctionCommon):
     self.point_list = self.adaptor.point_list(**kwargs)
 
     self.num_points = self.get_num_points()
-    self.pieces = [None] * self.num_points
+    self.num_pieces = self.get_num_pieces()
+    self.pieces = [None] * self.num_pieces
     # Partitioning the domain
-    self.partition = [None] * self.num_points
-    self.lengths = [None] * self.num_points
+    self.partition = [None] * self.num_pieces
+    self.lengths = [None] * self.num_pieces
     self.total_length = None
     self.uniform_distribution = True
 
@@ -35,36 +37,39 @@ class PiecewiseFunction(FunctionCommon):
     self.generate_pieces(**kwargs)
 
   def get_num_points(self):
+    return len(self.point_list)
+
+  def get_num_pieces(self):
     if self.cyclic:
-      return len(self.point_list)
-    return len(self.point_list) - 1
+      return self.num_points
+    return self.num_points - 1
 
   def generate_partition(self):
     # Partition the domain [t1, t2] into subdomains for each piece
     start = self.t1
     if not self.uniform_distribution:
-      width = (self.t2 - self.t1) / self.num_points
-      for i in range(self.num_points):
+      width = (self.t2 - self.t1) / self.num_pieces
+      for i in range(self.num_pieces):
         start += width
         self.partition[i] = start
       return
 
     self.total_length = 0
-    for i in range(self.num_points):
+    for i in range(self.num_pieces):
       x1 = self.point_list[i]
-      x2 = self.point_list[i+1]
+      x2 = self.point_list[(i+1) % self.num_points]
       self.lengths[i] = (x2 - x1).length
       self.total_length += self.lengths[i]
     scale = self.width / self.total_length
-    for i in range(self.num_points):
+    for i in range(self.num_pieces):
       start += self.lengths[i] * scale
       self.partition[i] = start
 
   def get_index(self, t):
     # Which partition does t fall in?
-    for i in range(self.num_points):
+    for i in range(self.num_pieces):
       if self.partition[i] >= t: return i
-    return self.num_points - 1
+    return self.num_pieces - 1
 
   def evaluate(self, t):
     t = self.sanitize_t(t)    
