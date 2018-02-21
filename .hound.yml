@@ -3,5 +3,5 @@ fail_on_violations: true
 python:
   enabled: true
 
-flake8:
+markdown:
   enabled: true
