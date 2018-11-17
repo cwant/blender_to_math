@@ -1,0 +1,2 @@
+[flake8]
+exclude = blender_to_math/path_functions/recycling_bin.py
