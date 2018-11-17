@@ -1,4 +1,4 @@
-from path_functions.function_common import *
+from blender_to_math.path_functions.function_common import *
 
 class Linear:
   def __init__(self, x1, x2, t1, t2):
