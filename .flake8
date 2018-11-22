@@ -1,2 +1,4 @@
 [flake8]
-exclude = blender_to_math/path_functions/recycling_bin.py
+exclude =
+   blender_to_math/path_functions/recycling_bin.py,
+   wire_skin.py
